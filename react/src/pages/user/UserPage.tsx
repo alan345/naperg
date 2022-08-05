@@ -1,9 +1,7 @@
 import React from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { User } from "./User.type";
-// import { Button } from "@material-ui/core/";
 import { gql, useQuery } from "@apollo/client";
-import { ParamTypes } from "../../ParamTypes.type";
 import { Button } from "@material-ui/core";
 import EditUser from "./EditUser";
 
@@ -19,9 +17,8 @@ export const QUERY = gql`
   }
 `;
 
-const UserPage = () => {
-  const params: ParamTypes = useParams<ParamTypes>();
-  const userId = params.userId;
+const UserPage: React.FC = () => {
+  const { userId } = useParams();
   const [editMode, setEditMode] = React.useState(false);
   const { data } = useQuery(QUERY, {
     variables: {
@@ -31,6 +28,7 @@ const UserPage = () => {
 
   if (!data?.user) return null;
   const user: User = data.user;
+
   return (
     <div>
       <h3>User</h3>
@@ -63,4 +61,5 @@ const UserPage = () => {
     </div>
   );
 };
+
 export default UserPage;

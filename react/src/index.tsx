@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom/client"
 import "./index.css"
 import App from "./App"
 import reportWebVitals from "./reportWebVitals"
@@ -33,12 +33,17 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
-  document.getElementById("root")
-)
+const container = document.getElementById("root");
+
+if (container) {
+  const root = ReactDOM.createRoot(container);
+
+  root.render(
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  );
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

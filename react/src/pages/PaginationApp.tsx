@@ -1,23 +1,23 @@
 import React from "react";
+import queryString from "query-string"
 import { Pagination } from "@material-ui/lab";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface Props {
   count: number;
   take: number;
 }
 
-const PaginationApp = (props: Props) => {
-  const queryString = require("query-string");
-
+const PaginationApp: React.FC<Props> = (props: Props) => {
   const location = useLocation();
   const parsed = queryString.parse(location.search);
-  const page = parsed.page ? Number(parsed.page) : 1;
+  const page: number = parsed.page ? Number(parsed.page) : 1;
 
-  const history = useHistory();
-  const onChange = (event: any, page: number) => {
-    parsed.page = page;
-    history.push("?" + queryString.stringify(parsed));
+  const navigate = useNavigate();
+
+  const onChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    parsed.page = String(page);
+    navigate("?" + queryString.stringify(parsed));
   };
 
   return (
@@ -30,4 +30,5 @@ const PaginationApp = (props: Props) => {
     </>
   );
 };
+
 export default PaginationApp;

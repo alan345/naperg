@@ -1,6 +1,7 @@
 import React from "react"
 import { gql, useQuery } from "@apollo/client"
 import { PostsContext } from "./Context"
+
 export const QUERY = gql`
   query Me {
     me {
@@ -11,7 +12,7 @@ export const QUERY = gql`
   }
 `
 
-export default function Me() {
+const Me: React.FC = () => {
   const { data } = useQuery(QUERY)
   const context = React.useContext(PostsContext)
 
@@ -24,3 +25,5 @@ export default function Me() {
 
   return null
 }
+
+export default Me;

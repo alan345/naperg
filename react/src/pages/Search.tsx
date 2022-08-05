@@ -1,19 +1,19 @@
 import React, { useState } from "react";
-import { FormControl, InputLabel, Input, Grid } from "@material-ui/core/";
+import { FormControl, InputLabel, Input, Grid } from "@material-ui/core";
+import queryString from "query-string"
 import SearchIcon from "@material-ui/icons/Search";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import ClearIcon from "@material-ui/icons/Clear";
 
-const Search = () => {
-  const history = useHistory();
+const Search: React.FC = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const queryString = require("query-string");
   const parsed = queryString.parse(location.search);
 
   const [search, setSearch] = useState(parsed.search ? parsed.search : "");
 
-  const onKeyPress = (data: any) => {
+  const onKeyPress = (data: React.KeyboardEvent<HTMLInputElement>) => {
     if (data.charCode === 13) {
       searchF();
     }
@@ -21,9 +21,10 @@ const Search = () => {
 
   const searchF = () => {
     parsed.search = search;
-    parsed.page = 1;
-    history.push("?" + queryString.stringify(parsed));
+    parsed.page = "1";
+    navigate("?" + queryString.stringify(parsed));
   };
+
   return (
     <>
       <Grid item xs={12} md={3} className="">
@@ -39,7 +40,7 @@ const Search = () => {
                       setSearch("");
                       delete parsed.search;
 
-                      history.push("?" + queryString.stringify(parsed));
+                      navigate("?" + queryString.stringify(parsed));
                     }}
                   />
                 ) : (

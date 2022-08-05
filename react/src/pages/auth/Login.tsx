@@ -1,9 +1,10 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core/";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
 import { Typography } from "@material-ui/core";
 import { PostsContext } from "../../Context";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const MUTATION = gql`
@@ -18,8 +19,9 @@ const MUTATION = gql`
     }
   }
 `;
-const Login = () => {
-  const history = useHistory();
+
+const Login: React.FC = () => {
+  const navigate = useNavigate();
   const context = React.useContext(PostsContext);
   const [message, setMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -29,6 +31,7 @@ const Login = () => {
 
   const loginF = async () => {
     let dataUser;
+
     try {
       dataUser = await loginUser({
         variables: {
@@ -37,22 +40,25 @@ const Login = () => {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.loginUser) {
       setMessage("");
       localStorage.setItem("AUTH_TOKEN", dataUser.data.loginUser.token);
       context.updateUser(dataUser.data.loginUser.user);
-      history.push("/");
+      navigate("/");
     }
   };
-  const handleKeyPress = (e: any) => {
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       loginF();
     }
   };
+
   return (
     <>
       <h3>Login</h3>
@@ -89,4 +95,5 @@ const Login = () => {
     </>
   );
 };
+
 export default Login;

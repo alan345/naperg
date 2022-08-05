@@ -1,11 +1,10 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core/";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
 import { Typography } from "@material-ui/core";
 import { PostsContext } from "../../Context";
-import { useHistory } from "react-router-dom";
-import { useParams } from "react-router";
-import { ParamTypes } from "../../ParamTypes.type";
+import { useNavigate, useParams } from "react-router-dom";
 
 const MUTATION = gql`
   mutation ResetPassword($password: String!, $resetPasswordToken: String!) {
@@ -22,11 +21,11 @@ const MUTATION = gql`
     }
   }
 `;
-const ResetPassword = () => {
-  const params: ParamTypes = useParams<ParamTypes>();
-  const resetPasswordToken = params.resetPasswordToken;
 
-  const history = useHistory();
+const ResetPassword: React.FC = () => {
+  const { resetPasswordToken } = useParams();
+
+  const navigate = useNavigate();
   const context = React.useContext(PostsContext);
   const [message, setMessage] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -35,7 +34,7 @@ const ResetPassword = () => {
 
   React.useEffect(() => {
     if (context.user.id) {
-      history.push("/");
+      navigate("/");
     }
   }, [context]);
 
@@ -49,22 +48,25 @@ const ResetPassword = () => {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.resetPassword) {
       setMessage("");
       localStorage.setItem("AUTH_TOKEN", dataUser.data.resetPassword.token);
       context.updateUser(dataUser.data.resetPassword.user);
-      history.push("/");
+      navigate("/");
     }
   };
-  const handleKeyPress = (e: any) => {
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       loginF();
     }
   };
+
   return (
     <>
       <h3>Reset Password</h3>
@@ -90,4 +92,5 @@ const ResetPassword = () => {
     </>
   );
 };
+
 export default ResetPassword;

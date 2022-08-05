@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Signup from "../pages/auth/Signup";
 import Login from "../pages/auth/Login";
 import Home from "../pages/Home";
@@ -10,21 +10,23 @@ import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import User from "../pages/user/UserPage";
 
-export default function RouteApp() {
+const RouteApp: React.FC = () => {
   return (
-    <Switch>
-      <Route exact path="/" component={Home} />
+    <Routes>
+      <Route path="/" element={<Home />} />
 
-      <PublicRoute path="/signup" component={Signup} />
-      <PublicRoute path="/login" component={Login} />
-      <PublicRoute path="/forgetPassword" component={ForgetPassword} />
-      <PublicRoute
+      <Route path="/signup" element={<PublicRoute component={Signup} />} />
+      <Route path="/login" element={<PublicRoute component={Login} />} />
+      <Route path="/forgetPassword" element={<PublicRoute component={ForgetPassword} />} />
+      <Route
         path="/resetPassword/:resetPasswordToken"
-        component={ResetPassword}
+        element={<PublicRoute component={ResetPassword} />}
       />
 
-      <PrivateRoute path="/users" component={Users} />
-      <PrivateRoute path="/user/:userId" component={User} />
-    </Switch>
+      <Route path="/users" element={<PrivateRoute component={Users} />} />
+      <Route path="/user/:userId" element={<PrivateRoute component={User} />} />
+    </Routes>
   );
 }
+
+export default RouteApp

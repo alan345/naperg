@@ -1,17 +1,19 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core/";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
 import { Typography } from "@material-ui/core";
 import { PostsContext } from "../../Context";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MUTATION = gql`
   mutation ForgetPassword($email: String!) {
     forgetPassword(email: $email)
   }
 `;
-const ForgetPassword = () => {
-  const history = useHistory();
+
+const ForgetPassword: React.FC = () => {
+  const navigate = useNavigate();
   const context = React.useContext(PostsContext);
   const [message, setMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -20,7 +22,7 @@ const ForgetPassword = () => {
 
   React.useEffect(() => {
     if (context.user.id) {
-      history.push("/");
+      navigate("/");
     }
   }, [context]);
 
@@ -33,21 +35,24 @@ const ForgetPassword = () => {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.forgetPassword) {
       setMessage(
         "🥳 Success! Please check the terminal to get the content of the email sent to the user"
       );
     }
   };
-  const handleKeyPress = (e: any) => {
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       loginF();
     }
   };
+
   return (
     <>
       <h3>Forget Password</h3>
@@ -72,4 +77,5 @@ const ForgetPassword = () => {
     </>
   );
 };
+
 export default ForgetPassword;

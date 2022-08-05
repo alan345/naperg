@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@material-ui/core/";
-import { gql, useMutation, useApolloClient } from "@apollo/client";
+import { gql, useMutation, useApolloClient, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
 
 const MUTATION = gql`
   mutation DeleteUser($userId: String!) {
@@ -13,7 +14,8 @@ const MUTATION = gql`
 interface Props {
   userId: string;
 }
-const DeleteUser = (props: Props) => {
+
+const DeleteUser: React.FC<Props> = (props: Props) => {
   const client = useApolloClient();
   const [message, setMessage] = React.useState("");
 
@@ -21,6 +23,7 @@ const DeleteUser = (props: Props) => {
 
   const deleteUserF = async () => {
     let dataUser;
+
     try {
       dataUser = await deleteUser({
         variables: {
@@ -28,10 +31,11 @@ const DeleteUser = (props: Props) => {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.deleteUser) {
       setMessage("");
       client.resetStore();
@@ -47,4 +51,5 @@ const DeleteUser = (props: Props) => {
     </>
   );
 };
+
 export default DeleteUser;

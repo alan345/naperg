@@ -1,9 +1,11 @@
+export type UserRole = "ADMIN" | "USER";
+
 export interface User {
   id: string;
   name: string;
   email: string;
   lastLogin?: Date;
-  role: "ADMIN" | "USER";
+  role: UserRole;
 }
 
 export const userClass: User = {

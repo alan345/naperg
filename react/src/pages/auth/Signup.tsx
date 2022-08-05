@@ -1,9 +1,10 @@
 import React from "react";
 import { TextField, Button } from "@material-ui/core/";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
 import { Typography } from "@material-ui/core";
 import { PostsContext } from "../../Context";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MUTATION = gql`
   mutation SignupUser($name: String!, $email: String!, $password: String!) {
@@ -17,8 +18,9 @@ const MUTATION = gql`
     }
   }
 `;
-export default function Signup() {
-  const history = useHistory();
+
+const Signup: React.FC = () => {
+  const navigate = useNavigate();
   const context = React.useContext(PostsContext);
   const [message, setMessage] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -28,11 +30,11 @@ export default function Signup() {
 
   React.useEffect(() => {
     if (context.user.id) {
-      history.push("/");
+      navigate("/");
     }
   }, [context]);
 
-  const handleKeyPress = (e: any) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       signupF();
     }
@@ -49,15 +51,16 @@ export default function Signup() {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.signupUser) {
       setMessage("");
       localStorage.setItem("AUTH_TOKEN", dataUser.data.signupUser.token);
       context.updateUser(dataUser.data.signupUser.user);
-      history.push("/");
+      navigate("/");
     }
   };
 
@@ -100,3 +103,5 @@ export default function Signup() {
     </>
   );
 }
+
+export default Signup;

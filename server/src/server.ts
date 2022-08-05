@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { resolvers } from './schema'
 import { createContext } from './context'
-import { makeExecutableSchema } from 'graphql-tools'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import { query } from './typeDefs/query'
 import { user } from './typeDefs/user'
 import { mutation } from './typeDefs/mutation'

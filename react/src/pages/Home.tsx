@@ -1,15 +1,16 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { PostsContext } from "../Context";
 import { Link } from "react-router-dom";
 
-const Home = () => {
-  const history = useHistory();
+const Home: React.FC = () => {
+  const navigate = useNavigate();
   const context = React.useContext(PostsContext);
+
   React.useEffect(() => {
     console.log(context.user.id === "");
     if (!context.user.id) {
-      history.push("/login");
+      navigate("/login");
     }
   }, [context]);
 

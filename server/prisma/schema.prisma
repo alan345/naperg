@@ -8,19 +8,16 @@ datasource db {
 }
 
 model User {
-  id                  String          @id @default(cuid())
-  createdAt                        DateTime        @default(now())
-  updatedAt                        DateTime        @updatedAt
-  email           String  @unique
-  password      String
-  role          String
-  lastLogin     DateTime?
-  resetPasswordToken String
-  dateResetPasswordRequest DateTime?
-  validateEmailToken String
-  isEmailValidated Boolean
-  name  String
+  id                        String          @id @default(cuid())
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+  email                     String          @unique
+  password                  String
+  role                      String
+  lastLogin                 DateTime?
+  resetPasswordToken        String
+  dateResetPasswordRequest  DateTime?
+  validateEmailToken        String
+  isEmailValidated          Boolean
+  name                      String
 }
-
-
-

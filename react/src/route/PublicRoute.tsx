@@ -1,23 +1,21 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { PostsContext } from "../Context";
 
 type Props = {
-  component: any;
-  path: string;
+  component: React.FC;
 };
 
-const PublicRoute = (props: Props) => {
+const PublicRoute: React.FC<Props> = (props: Props) => {
   const context = React.useContext(PostsContext);
 
-  const { component: Component, ...rest } = props;
-  return (
-    <Route
-      {...rest}
-      render={(props) => (
-        <>{context.user?.id ? <Redirect to="/" /> : <Component {...props} />}</>
-      )}
-    />
+  const { component: Component } = props;
+
+  return context.user?.id ? (
+    <Navigate to="/" replace />
+  ) : (
+    <Component />
   );
 };
+
 export default PublicRoute;

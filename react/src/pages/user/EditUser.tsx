@@ -1,7 +1,8 @@
 import React from "react";
 import { Button, TextField } from "@material-ui/core/";
-import { gql, useMutation } from "@apollo/client";
-import { User } from "./User.type";
+import { gql, useMutation, ApolloError } from "@apollo/client";
+import { GraphQLError } from "graphql";
+import { User, UserRole } from "./User.type";
 import { FormControl } from "@material-ui/core";
 import { Select } from "@material-ui/core";
 import { InputLabel } from "@material-ui/core";
@@ -22,7 +23,8 @@ interface Props {
   onCancel: () => void;
   onUpdate: () => void;
 }
-const EditUser = (props: Props) => {
+
+const EditUser: React.FC<Props> = (props: Props) => {
   // const client = useApolloClient();
   const [message, setMessage] = React.useState("");
   const [user, setUser] = React.useState(props.user);
@@ -42,10 +44,11 @@ const EditUser = (props: Props) => {
         },
       });
     } catch (e) {
-      e.graphQLErrors.some((graphQLError: any) =>
+      (e as ApolloError).graphQLErrors.some((graphQLError: GraphQLError) =>
         setMessage(graphQLError.message)
       );
     }
+
     if (dataUser?.data?.updateUser) {
       setMessage("");
       props.onUpdate();
@@ -69,7 +72,9 @@ const EditUser = (props: Props) => {
             labelId="role"
             id="role"
             value={user.role}
-            onChange={(e: any) => setUser({ ...user, role: e.target.value })}
+            onChange={(e: React.ChangeEvent<{ value: unknown }>) =>
+              setUser({ ...user, role: e.target.value as UserRole })
+            }
           >
             <MenuItem value={"USER"}>USER</MenuItem>
             <MenuItem value={"ADMIN"}>ADMIN</MenuItem>
@@ -90,4 +95,5 @@ const EditUser = (props: Props) => {
     </>
   );
 };
+
 export default EditUser;

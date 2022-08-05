@@ -1,4 +1,5 @@
 import React from "react";
+import queryString from "query-string";
 import { gql, useQuery } from "@apollo/client";
 import { User } from "./User.type";
 import { useLocation } from "react-router-dom";
@@ -24,8 +25,7 @@ export const QUERY = gql`
   }
 `;
 
-const Users = () => {
-  const queryString = require("query-string");
+const Users: React.FC = () => {
   const context = React.useContext(PostsContext);
   const location = useLocation();
   const parsed = queryString.parse(location.search);
@@ -74,4 +74,5 @@ const Users = () => {
     </>
   );
 };
+
 export default Users;

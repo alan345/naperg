@@ -11,8 +11,8 @@ import { Link } from "react-router-dom";
 import { PostsContext } from "./Context";
 import Logout from "./pages/auth/Logout";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-
 import MenuIcon from "@material-ui/icons/Menu";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -31,9 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Header() {
+const Header: React.FC = () => {
   const context = React.useContext(PostsContext);
   const classes = useStyles();
+
   return (
     <div>
       <div className={classes.root}>
@@ -91,3 +92,5 @@ export default function Header() {
     </div>
   );
 }
+
+export default Header;
